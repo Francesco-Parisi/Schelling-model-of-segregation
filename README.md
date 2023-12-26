@@ -31,7 +31,7 @@ Il modello di segregazione di Schelling è una dimostrazione di come piccole pre
 
 Il modello opera attraverso una griglia popolata da agenti divisi in due gruppi distinti. Ogni agente, con l'ambizione di avere almeno il 30% del proprio vicinato appartenente al suo gruppo, si sposta se tale criterio non è soddisfatto, puntando sempre a uno spazio libero. La simulazione procede fino a quando ognuno degli agenti è contento della propria posizione o si raggiunge un numero massimo di step. 
 
-L'obiettivo del progetto è quello di replicare tale simulazione mediante un'implementazione in linguaggio C, avvalendosi della potenza e versatilità della libreria Open MPI. Questa implementazione del modello punta non solo a emulare il fenomeno di segregazione, ma anche a sottolineare l'importanza e l'efficacia della programmazione parallela nel trattare problemi complessi.
+L'obiettivo del progetto è quello di replicare tale simulazione mediante un'implementazione in linguaggio C, avvalendosi della potenza e versatilità della libreria MPI. Questa implementazione del modello punta non solo a emulare il fenomeno di segregazione, ma anche a sottolineare l'importanza e l'efficacia della programmazione parallela nel trattare problemi complessi.
 
 ## **Soluzione proposta**
 La soluzione proposta per l'implementazione di tale modello si concentra sull'efficienza e sulla collaborazione tra i vari processori. Fondamentalmente, la strategia si articola attraverso un sistema in cui ogni processore lavora su sottomatrici specifiche, garantendo che queste siano equamente suddivise. Questo approccio non solo ottimizza l'uso delle risorse computazionali, ma facilita anche una computazione più rapida ed efficiente.
