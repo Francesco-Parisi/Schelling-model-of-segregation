@@ -123,14 +123,14 @@ Come è possibile vedere dalla funzione, tale logica di assegnazione consiste ne
 - **' '** altrimenti;
 
 **⚠️Non è possibile creare una matrice con un numero di righe maggiore del numero di processi con cui si decide di eseguire il programma** 
-> Limitando il numero di righe al numero di processi, al crescere del numero di processi (e quindi delle righe), il lavoro sia distribuito in modo ottimale tra i processi, mantenendo l'efficienza e la scalabilità.
+> Limitando il numero di righe al numero di processi, al crescere del numero di processi (e quindi delle righe), il lavoro sarà distribuito in modo ottimale tra i processi, mantenendo l'efficienza e la scalabilità.
 
 Una volta configurata, la matrice è visualizzata a terminale attraverso la funzione `print_matrix()`. Questa funzione, sfruttando `print_random_agent()`, stampa gli agenti <font color="#4495e6">**X**</font> in blu e gli agenti <font color="red">**O**</font> in rosso, mentre le celle vuote vengono rappresentate come spazi. Questo comportamento è garantito dalle macro PRINT_BLUE e PRINT_RED.
 
 ### **Suddivisione della matrice**
 In questa fase l'obiettivo principale è distribuire equamente le righe della matrice tra i vari processi coinvolti, considerando le dimensioni della matrice e il numero di processi. Questo compito è gestito dalla funzione `rows_distribution()`.
 
-All'inizio, si calcola quante righe ogni processo dovrebbe ricevere, effettuando una semplice divisione: int rows_send = rows / size;. Tuttavia, se la divisione non è perfettamente equa, ovvero se ci sono delle righe 'extra' (determinate dal modulo rows % size), queste vengono assegnate ai processi uno alla volta, finché tutte le righe extra non sono state distribuite. Questa logica è evidente nel seguente blocco di codice:
+All'inizio, si calcola quante righe ogni processo dovrebbe ricevere, effettuando una semplice divisione: rows_send = rows / size. Tuttavia, se la divisione non è perfettamente equa, ovvero se ci sono delle righe 'extra' (determinate dal modulo rows % size), queste vengono assegnate ai processi uno alla volta, finché tutte le righe extra non sono state distribuite. Questa logica è evidente nel seguente blocco di codice:
 
 ```c
 if (rows_rest > 0) {
@@ -139,7 +139,7 @@ if (rows_rest > 0) {
     rows_rest--;
 }
 ```
-Oltre alla distribuzione iniziale delle righe, ogni processo, a eccezione del primo e dell'ultimo, riceve anche due righe extra, al fine di 'ospitare' le righe dei processi adiacenti. Il primo e l'ultimo processo ricevono solo una riga extra, in quanto hanno rispettivamente solo un processo adiacente a destra o a sinistra. Il motivo di ciò è stato quello di non implementare la matrice come una struttura circolare.
+Oltre alla distribuzione iniziale delle righe, ogni processo, a eccezione del primo e dell'ultimo, riceve anche due righe extra, al fine di 'ospitare' le righe dei processi adiacenti. Il primo e l'ultimo processo ricevono solo una riga extra, in quanto hanno rispettivamente solo un processo adiacente a destra o a sinistra.
 
 ```c
 sub_matrix = malloc(rows_process[rank] * COLUMNS * sizeof(char *));
@@ -252,7 +252,7 @@ In questa fase bisogna determinare le posizioni disponibili in cui gli agenti in
 Per procedere con la corretta identificazione di tali celle, viene chiamata la funzione `find_empty_cells()`. 
 Tale funzione cerca le celle vuote nella sottomatrice data in input e restituisce una array di strutture.
 
-Cio è stato possibile definendo innanzitutto la struttua **empty_cell**:
+Cio è stato possibile definendo innanzitutto la struttura **empty_cell**:
 
 ```c
 typedef struct {
@@ -416,7 +416,7 @@ mpirun --allow-run-as-root --mca btl_vader_single_copy_mechanism none -np <numer
 ## **Benchmarking**
 Nella fase di benchmarking, l'implementazione è stata  testata su un cluster GCP composto da sei macchine di tipo <a href="https://cloud.google.com/compute/docs/general-purpose-machines?hl=it" target="_blank">**e2-highcpu-4**</a> (US-central1), ognuna con 4 vCPU e 4GB di RAM, per un totale di 24 vCPUs e 24GB di RAM e con un costo complessivo di circa 8.79$. Le prove sono state condotte per esaminare due principali metriche di scalabilità: la scalabilità forte e la scalabilità debole. Tali metriche sono concepite per comprendere come un sistema parallelo si comporta al variare del numero di processori. Pertanto, per ogni test è stato valutato il tempo di esecuzione e l'efficienza dell'implementazione.
 
-Nota: Per ogni test svolto, sono state effettuate tre ripetizioni ognuno e calcolata la mediana, riducendo così eveuntali valori sfalsati. Tutti i risultati dei test sono consultabili aprendo il file <a href="https://github.com/Francesco-Parisi/Schelling-s-model-of-segregation/blob/main/benchmarking.xlsx">**benchmarking.xlsx**</a>
+Nota: Per ogni test svolto, sono state effettuate tre ripetizioni ognuno e calcolata la mediana, riducendo così eventuali valori sfalsati. Tutti i risultati dei test sono consultabili aprendo il file <a href="https://github.com/Francesco-Parisi/Schelling-s-model-of-segregation/blob/main/benchmarking.xlsx">**benchmarking.xlsx**</a>
 
 ### **Scalabilità Forte**
 La scalabilità forte si riferisce al modo in cui il tempo di esecuzione di un problema varia con il numero di processori, ma mantenendo costante la dimensione del problema. Ciò significa che stiamo cercando di vedere come l'aggiunta di più processori accelera la soluzione di un singolo problema fisso. 
@@ -522,7 +522,7 @@ Nel caso della scalabilità forte, dove la dimensione dell'input è stata manten
 
 Ad esempio, per la matrice di dimensione 100x100, l'efficienza si è ridotta drasticamente quando il numero di vCPUs è aumentato, con valori di efficienza che scendono allo 0.09% con 24 vCPUs. Anche per le matrici di dimensione superiore, il trend è simile, anche se i valori di efficienza variano.
 
-Emerge che il miglior equilibrio tra efficienza e tempo di computazione si verifica con un numero di vCPUs intorno a 2. Mentrei tempi di computazione più brevi sono ottenuti utilizzando un numero maggiore di processori, il costo in termini di efficienza diventa sempre più significativo con l'aumento delle vCPUs.
+Emerge che il miglior equilibrio tra efficienza e tempo di computazione si verifica con un numero di vCPUs intorno a 2. Mentre i tempi di computazione più brevi sono ottenuti utilizzando un numero maggiore di processori, il costo in termini di efficienza diventa sempre più significativo con l'aumento delle vCPUs.
 
 #### **Scalabilità Debole**
 Per quanto riguarda la scalabilità debole, l'obiettivo era garantire che ogni processore avesse lo stesso carico di lavoro. Tuttavia, nonostante l'incremento delle righe della matrice proporzionale al numero di vCPUs, i tempi di computazione hanno mostrato un aumento significativo. In particolare, con 24 vCPUs, il tempo è salito a 220.229 secondi, con un'efficienza del 3.4%. Questo sottolinea che, nonostante l'incremento proporzionale del carico, l'overhead di comunicazione ha un impatto significativo sui tempi di computazione e sull'efficienza.
