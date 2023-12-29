@@ -1,4 +1,4 @@
-# Schelling-s-model-of-segregation
+# Schelling-model-of-segregation
 Progetto realizzato per l'esame di Programmazione Concorrente, Parallela e su Cloud 2022-2023.
 
 - Studente: **Francesco Parisi**
