@@ -247,7 +247,7 @@ void print_init_info(int size){
 
 }
 
-//Funzione che si occupa di distribuire le righe della matrice ai vari processi
+//Funzione che si occupa di calcolare le righe della matrice da distribuire ai vari processi
 int *rows_distribution(int rank, int rows, int size, int *rows_proc, int *displacements, int *sendcounts) {
 
     //Numero di righe assegnate ad ogni processo

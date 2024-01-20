@@ -128,7 +128,7 @@ Come è possibile vedere dalla funzione, tale logica di assegnazione consiste ne
 Una volta configurata, la matrice è visualizzata a terminale attraverso la funzione `print_matrix()`. Questa funzione, sfruttando `print_random_agent()`, stampa gli agenti <font color="#4495e6">**X**</font> in blu e gli agenti <font color="red">**O**</font> in rosso, mentre le celle vuote vengono rappresentate come spazi. Questo comportamento è garantito dalle macro PRINT_BLUE e PRINT_RED.
 
 ### **Suddivisione della matrice**
-In questa fase l'obiettivo principale è distribuire equamente le righe della matrice tra i vari processi coinvolti, considerando le dimensioni della matrice e il numero di processi. Questo compito è gestito dalla funzione `rows_distribution()`.
+In questa fase l'obiettivo principale è calcolare equamente le righe della matrice da distribuire tra i vari processi coinvolti, considerando le dimensioni della matrice e il numero di processi. Questo compito è gestito dalla funzione `rows_distribution()`.
 
 All'inizio, si calcola quante righe ogni processo dovrebbe ricevere, effettuando una semplice divisione: rows_send = rows / size. Tuttavia, se la divisione non è perfettamente equa, ovvero se ci sono delle righe 'extra' (determinate dal modulo rows % size), queste vengono assegnate ai processi uno alla volta, finché tutte le righe extra non sono state distribuite. Questa logica è evidente nel seguente blocco di codice:
 
@@ -139,16 +139,17 @@ if (rows_rest > 0) {
     rows_rest--;
 }
 ```
-Oltre alla distribuzione iniziale delle righe, ogni processo, a eccezione del primo e dell'ultimo, riceve anche due righe extra, al fine di 'ospitare' le righe dei processi adiacenti. Il primo e l'ultimo processo ricevono solo una riga extra, in quanto hanno rispettivamente solo un processo adiacente a destra o a sinistra.
+Ogni processo, a eccezione del primo e dell'ultimo, riceve anche due righe extra, al fine di *ospitare* le righe dei processi adiacenti. Il primo e l'ultimo processo ricevono solo una riga extra, in quanto hanno rispettivamente solo un processo adiacente a destra o a sinistra.
 
 ```c
 sub_matrix = malloc(rows_process[rank] * COLUMNS * sizeof(char *));
 MPI_Scatterv(matrix, sendcounts, displacements, MPI_CHAR, sub_matrix, rows_process[rank] * COLUMNS, MPI_CHAR, 0, MPI_COMM_WORLD);
 ```
-La matrice iniziale viene divisa in sottomatrici e inviate dal processo root a tutti gli altri processi tramite la funzione **MPI_Scatterv()**.
+In seguito al calcolo, la matrice iniziale viene divisa correttamente in sottomatrici e successivamente inviate dal processo root a tutti gli altri processi tramite la funzione **MPI_Scatterv()**.
+
 
 ### **Scambio delle righe**
-A questo punto risulta essenziale che i processi condividano dati tra loro. Pertanto, uno degli aspetti cruciali è lo scambio di righe tra sottomatrici gestite da processi vicini. L'intento è far sì che i processi abbiano accesso alle informazioni necessarie dai loro vicini senza la necessità di condividere l'intera matrice.
+Risulta essenziale che i processi condividano dati tra loro. Pertanto, uno degli aspetti cruciali è lo scambio di righe tra sottomatrici gestite da processi vicini. L'intento è far sì che i processi abbiano accesso alle informazioni necessarie dai loro vicini senza la necessità di condividere l'intera matrice.
 
 il seguente codice determina se un dato processo è "al bordo" dell'insieme di processi, cioè se è il primo o l'ultimo nella sequenza:
 
