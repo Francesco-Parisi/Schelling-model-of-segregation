@@ -25,11 +25,12 @@ Progetto realizzato per l'esame di Programmazione Concorrente, Parallela e su Cl
 
 
 ## **Introduzione**
-Il modello di segregazione di Schelling è una dimostrazione di come piccole preferenze individuali possano generare grandi effetti complessivi a livello di società. Progettato originariamente da Thomas Schelling, economista degli anni '60 e '70 del Novecento, questo modello agent-based svela che, anche in presenza di una preferenza di tipo etnico, sociale o culturale, le scelte individuali possono portare a una totale segregazione. 
+Il modello di segregazione di Schelling è una dimostrazione di come il grado di intolleranza individuale possa generare grandi effetti complessivi a livello di società. 
+Questo modello agent-based, progettato originariamente da Thomas Schelling, svela che anche in presenza di una preferenza di tipo etnico, sociale o culturale, le scelte individuali possono portare a una totale segregazione.
 
 ![schelling](img/schelling.gif)
 
-Il modello opera attraverso una griglia popolata da agenti divisi in due gruppi distinti. Ogni agente, con l'ambizione di avere almeno il 30% del proprio vicinato appartenente al suo gruppo, si sposta se tale criterio non è soddisfatto, puntando sempre a uno spazio libero. La simulazione procede fino a quando ognuno degli agenti è contento della propria posizione o si raggiunge un numero massimo di step. 
+Il modello opera attraverso una griglia popolata da agenti divisi in due gruppi distinti. Ogni agente, con l'ambizione di avere almeno il 30% del proprio vicinato appartenente al suo gruppo, si sposta se tale criterio non è soddisfatto, puntando sempre a uno spazio libero. La simulazione procede fino a quando ognuno degli agenti è contento della propria posizione o si raggiunge un numero massimo di step.
 
 L'obiettivo del progetto è quello di replicare tale simulazione mediante un'implementazione in linguaggio C, avvalendosi della potenza e versatilità della libreria MPI. Questa implementazione del modello punta non solo a emulare il fenomeno di segregazione, ma anche a sottolineare l'importanza e l'efficacia della programmazione parallela nel trattare problemi complessi.
 
@@ -526,7 +527,16 @@ Ad esempio, per la matrice di dimensione 100x100, l'efficienza si è ridotta dra
 Emerge che il miglior equilibrio tra efficienza e tempo di computazione si verifica con un numero di vCPUs intorno a 2. Mentre i tempi di computazione più brevi sono ottenuti utilizzando un numero maggiore di processori, il costo in termini di efficienza diventa sempre più significativo con l'aumento delle vCPUs.
 
 #### **Scalabilità Debole**
-Per quanto riguarda la scalabilità debole, l'obiettivo era garantire che ogni processore avesse lo stesso carico di lavoro. Tuttavia, nonostante l'incremento delle righe della matrice proporzionale al numero di vCPUs, i tempi di computazione hanno mostrato un aumento significativo. In particolare, con 24 vCPUs, il tempo è salito a 220.229 secondi, con un'efficienza del 3.4%. Questo sottolinea che, nonostante l'incremento proporzionale del carico, l'overhead di comunicazione ha un impatto significativo sui tempi di computazione e sull'efficienza.
+Per quanto riguarda la scalabilità debole, l'obiettivo era garantire che ogni processore avesse lo stesso carico di lavoro. Tuttavia, nonostante l'incremento delle righe della matrice proporzionale al numero di vCPUs, i tempi di computazione hanno mostrato un aumento significativo. In particolare, con 24 vCPUs, il tempo è salito a 220.229 secondi, con un'efficienza del 3.4%. Nonostante l'incremento proporzionale del carico, l'overhead di comunicazione ha comunque un impatto significativo sui tempi di computazione e sull'efficienza.
 
 ## **Conclusioni**
-I benchmark effettuati hanno permesso di comprendere l'efficacia dell'implementazione parallela. Mentre vi è un chiaro vantaggio iniziale nell'adozione della computazione parallela, il ritorno in termini di performance diventa marginale all'aumentare del numero di vCPUs, principalmente a causa dell'overhead di comunicazione. La scelta del numero ottimale di processori dipende quindi da un bilanciamento tra efficienza e tempi di computazione. Ulteriori ottimizzazioni potrebbero essere necessarie per massimizzare l'efficienza nelle configurazioni con un numero elevato di processori.
+I benchmark effettuati hanno permesso di comprendere l'efficacia dell'implementazione parallela. Anche se è evidente un vantaggio iniziale nell'adozione della computazione parallela, il ritorno in termini di performance diventa minimo all'aumentare del numero di vCPUs, principalmente a causa dell'overhead di comunicazione. Pertanto, la scelta del numero ottimale di processori dipende da un bilanciamento tra efficienza e tempi di computazione. 
+
+Ulteriori ottimizzazioni potrebbero essere necessarie per massimizzare l'efficienza nelle configurazioni con un numero elevato di processori.
+
+
+### **Fonti**
+
+ - https://hal.science/hal-00469727v2/document
+ - http://nifty.stanford.edu/2014/mccown-schelling-model-segregation/
+ - https://en.wikipedia.org/wiki/Schelling%27s_model_of_segregation
